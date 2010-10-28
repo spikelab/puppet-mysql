@@ -24,7 +24,7 @@ class mysql::backup {
 
   file { "/usr/local/bin/mysql-backup.sh":
     ensure => present,
-    source => "puppet:///mysql/mysql-backup.sh",
+    source => "puppet:///modules/mysql/mysql-backup.sh",
     owner => "root",
     group => "root",
     mode  => 555,

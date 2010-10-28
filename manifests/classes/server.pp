@@ -28,7 +28,7 @@ class mysql::server {
 
   file { "/usr/share/augeas/lenses/contrib/mysql.aug":
     ensure => present,
-    source => "puppet:///mysql/mysql.aug",
+    source => "puppet:///modules/mysql/mysql.aug",
   }
 
   augeas { "my.cnf/mysqld":
@@ -200,7 +200,7 @@ class mysql::server {
   file { "/etc/logrotate.d/mysql-server":
     ensure => present,
     source => $operatingsystem ? {
-      /RedHat|Fedora|CentOS/ => "puppet:///mysql/logrotate.redhat",
+      /RedHat|Fedora|CentOS/ => "puppet:///modules/mysql/logrotate.redhat",
       default => undef,
     }
   }
