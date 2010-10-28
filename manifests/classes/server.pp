@@ -189,13 +189,15 @@ class mysql::server {
   }
 
   # Remove unneeded extra "root@127.0.0.1" and "root@host" users
-  mysql_user {
-    "root@127.0.0.1":
-      ensure => absent,
-      require => File['/root/.my.cnf'];
-    "root@$hostname":
-      ensure => absent,
-      require => File['/root/.my.cnf'];
+  if $mysql_exists == "true" {
+    mysql_user {
+      "root@127.0.0.1":
+        ensure => absent,
+        require => File['/root/.my.cnf'];
+      "root@$hostname":
+        ensure => absent,
+        require => File['/root/.my.cnf'];
+    }
   }
 
   file { "/var/lib/mysql":
