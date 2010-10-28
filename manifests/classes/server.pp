@@ -26,7 +26,7 @@ class mysql::server {
     require => Package["mysql-server"],
   }
 
-  file { "/usr/share/augeas/lenses/contrib/mysql.aug":
+  file { "/usr/share/augeas/lenses/mysql.aug":
     ensure => present,
     source => "puppet:///modules/mysql/mysql.aug",
   }
