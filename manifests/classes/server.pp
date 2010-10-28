@@ -164,7 +164,7 @@ class mysql::server {
 
   } else {
 
-    $mysql_password = generate("/usr/bin/pwgen", 8, 1)
+    $mysql_password = inline_template("<%= (1..25).collect{|a| (('a'..'z').to_a + ('A'..'Z').to_a + ('0'..'9').to_a + %w(# % & * + - : ? @ ^ _))[rand(75)] }.join %>")
 
     file { "/root/.my.cnf":
       owner => root,
@@ -177,13 +177,13 @@ class mysql::server {
 
   exec { "Initialize MySQL server root password":
     unless      => "test -f /root/.my.cnf",
-    command     => "mysqladmin -u${mysql_user} password ${mysql_password}",
+    command     => "mysqladmin -u${mysql_user} password '${mysql_password}'",
     notify      => Exec["Generate my.cnf"],
     require     => [Package["mysql-server"], Service["mysql"]]
   }
 
   exec { "Generate my.cnf":
-    command     => "echo -e \"[mysql]\nuser=${mysql_user}\npassword=${mysql_password}\n[mysqladmin]\nuser=${mysql_user}\npassword=${mysql_password}\n[mysqldump]\nuser=${mysql_user}\npassword=${mysql_password}\n[mysqlshow]\nuser=${mysql_user}\npassword=${mysql_password}\n\" > /root/.my.cnf",
+    command     => "/bin/echo -e '[mysql]\\nuser=${mysql_user}\\npassword=${mysql_password}\\n[mysqladmin]\\nuser=${mysql_user}\\npassword=${mysql_password}\\n[mysqldump]\\nuser=${mysql_user}\\npassword=${mysql_password}\\n[mysqlshow]\\nuser=${mysql_user}\\npassword=${mysql_password}\\n' > /root/.my.cnf",
     refreshonly => true,
     creates     => "/root/.my.cnf",
   }
