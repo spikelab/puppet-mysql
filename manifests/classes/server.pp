@@ -204,7 +204,7 @@ class mysql::server {
     ensure  => directory,
     owner   => "mysql",
     group   => "mysql",
-    mode    => 755,
+    mode    => 700,
     seltype => "mysqld_db_t",
     require => Package["mysql-server"],
   }
