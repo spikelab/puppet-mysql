@@ -164,7 +164,7 @@ class mysql::server {
 
   } else {
 
-    $mysql_password = inline_template("<%= (1..25).collect{|a| (('a'..'z').to_a + ('A'..'Z').to_a + ('0'..'9').to_a + %w(# % & * + - : ? @ ^ _))[rand(75)] }.join %>")
+    $mysql_password = inline_template("<%= (1..25).collect{|a| (('a'..'z').to_a + ('A'..'Z').to_a + ('0'..'9').to_a + %w(% & * + - : ? @ ^ _))[rand(75)] }.join %>")
 
     file { "/root/.my.cnf":
       owner => root,
