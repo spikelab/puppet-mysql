@@ -43,11 +43,11 @@ class mysql::server {
       "set log-warnings 1",
       $operatingsystem ? {
         /RedHat|Fedora|CentOS/ => "set log-error /var/log/mysqld.log",
-        default => "set log-error /var/log/mysql.err",
+        default => "set log-error /var/log/mysql/error.log",
       },
       $operatingsystem ? {
-        /RedHat|Fedora|CentOS/ => "set log-slow-queries /var/log/mysql-slow-queries.log",
-        default => "set set log-slow-queries /var/log/mysql/mysql-slow.log",
+        /RedHat|Fedora|CentOS/ => "set slow-query-log /var/log/mysql-slow-queries.log",
+        default => "set slow-query-log /var/log/mysql/mysql-slow.log",
       },
       #"ins log-slow-admin-statements after log-slow-queries", # BUG: not implemented in puppet yet
       $operatingsystem ? {
