@@ -204,12 +204,19 @@ class mysql::server {
 		seltype => "mysqld_db_t",
 		require => Package["mysql-server"]
 	}
-
-	file { "/etc/logrotate.d/mysql-server":
-		ensure => present,
-		source => $operatingsystem ? {
-			/(?i)(RedHat|CentOS|Fedora)/ => "puppet:///modules/mysql/logrotate.redhat",
-			default                      => undef
-		}
+	
+	logrotate::file { "mysql-server":
+		log        => $operatingsystem ? {
+			/(?i)(RedHat|CentOS|Fedora)/ => "/var/log/mysqld.log /var/log/mysql-queries.log /var/log/mysql-slow-queries.log",
+			default                      => "/var/log/mysql.log /var/log/mysql/mysql.log /var/log/mysql/mysql-slow.log"
+			},
+		options    => [ "daily", "rotate 7", "missingok", "create 640 mysql mysql", "compress", "sharedscripts" ],
+		postrotate => "export MYADMIN="/usr/bin/mysqladmin --defaults-extra-file=/root/.my.cnf"
+        			   test -x /usr/bin/mysqladmin || exit 0
+        			   if ! $MYADMIN ping 2>&1 > /dev/null; then
+          			   	   echo "mysql not running" && exit 1
+        			   else
+          			   	   $MYADMIN flush-logs
+        			   fi"
 	}
 }
