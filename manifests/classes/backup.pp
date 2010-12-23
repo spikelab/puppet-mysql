@@ -18,7 +18,7 @@ class mysql::backup {
 		ensure => directory,
 		owner  => "root",
 		group  => "root",
-		mode   => 750,
+		mode   => 750
 	}
 
 	file { "/usr/local/bin/mysql-backup.sh":
@@ -26,7 +26,7 @@ class mysql::backup {
 		source => "puppet:///modules/mysql/mysql-backup.sh",
 		owner  => "root",
 		group  => "root",
-		mode   => 555,
+		mode   => 555
 	}
 
 	cron { "mysql-backup":
@@ -34,6 +34,6 @@ class mysql::backup {
 		user    => "root",
 		hour    => 2,
 		minute  => 0,
-		require => [File["/var/backups/mysql"], File["/usr/local/bin/mysql-backup.sh"]],
+		require => [ File["/var/backups/mysql"], File["/usr/local/bin/mysql-backup.sh"] ]
 	}
 }

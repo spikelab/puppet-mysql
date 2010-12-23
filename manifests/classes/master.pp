@@ -5,7 +5,7 @@ class mysql::master inherits mysql::server {
 			"set server-id ${mysql_serverid}",
 			"set expire_logs_days 7",
 			"set max_binlog_size 100M"
-		],
+		]
 	}
 
 	if $mysql_binlog_format {
@@ -13,7 +13,7 @@ class mysql::master inherits mysql::server {
 			context => "$mycnfctx/mysqld/",
 			changes => [
 				"set binlog-format ${mysql_binlog_format}"
-			],
+			]
 		}
 	}
 }
