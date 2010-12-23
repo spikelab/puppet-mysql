@@ -12,15 +12,11 @@ class mysql::administration {
 		/(?i)(RedHat|CentOS|Fedora)/   => "/etc/init.d/mysqld, /sbin/service mysqld",
 		/(?i)(Debian|Ubuntu|kFreeBSD)/ => "/etc/init.d/mysql"
 	}
-
-	common::concatfilepart { "sudoers.mysql":
-		ensure  => present,
-		file    => "/etc/sudoers",
-		content => "
-			# This part comes from modules/mysql/manifests/classes/administration.pp
-			%mysql-admin ALL=(root) ${distro_specific_mysql_sudo}
-			%mysql-admin ALL=(root) /bin/su mysql, /bin/su - mysql
-			",
+	
+	concat::fragment { "sudoers.mysql":
+		target  => "/etc/sudoers",
+		order   => 20,
+		content => template("mysql/sudoers.erb"),
 		require => Group["mysql-admin"]
 	}
 }

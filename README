@@ -17,7 +17,9 @@ mysql::database{"mydb":
 
 == Requires ==
 - Depends on augeas module, available here:
-  http://github.com/camptocamp/puppet-augeas
+  https://github.com/camptocamp/puppet-augeas
+- Depends on concat module, available here:
+  https://github.com/ripienaar/puppet-concat
 - you have to define a global path for exec, like:
   Exec { path => "/usr/bin:/bin/...." } 
   You can put it in globals.pp
