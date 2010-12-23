@@ -12,30 +12,28 @@ Attributes:
 
 */
 class mysql::backup {
+	if $mysqldump_retention {} else { $mysqldump_retention = "week" }
 
-  if $mysqldump_retention {} else { $mysqldump_retention = "week" }
+	file { "/var/backups/mysql":
+		ensure  => directory,
+		owner   => "root",
+		group   => "root",
+		mode    => 750,
+	}
 
-  file { "/var/backups/mysql":
-    ensure  => directory,
-    owner   => "root",
-    group   => "root",
-    mode    => 750,
-  }
+	file { "/usr/local/bin/mysql-backup.sh":
+		ensure => present,
+		source => "puppet:///modules/mysql/mysql-backup.sh",
+		owner => "root",
+		group => "root",
+		mode  => 555,
+	}
 
-  file { "/usr/local/bin/mysql-backup.sh":
-    ensure => present,
-    source => "puppet:///modules/mysql/mysql-backup.sh",
-    owner => "root",
-    group => "root",
-    mode  => 555,
-  }
-
-  cron { "mysql-backup":
-    command => "/usr/local/bin/mysql-backup.sh ${mysqldump_retention}",
-    user    => "root",
-    hour    => 2,
-    minute  => 0,
-    require => [File["/var/backups/mysql"], File["/usr/local/bin/mysql-backup.sh"]],
-  }
-
+	cron { "mysql-backup":
+		command => "/usr/local/bin/mysql-backup.sh ${mysqldump_retention}",
+		user    => "root",
+		hour    => 2,
+		minute  => 0,
+		require => [File["/var/backups/mysql"], File["/usr/local/bin/mysql-backup.sh"]],
+	}
 }
