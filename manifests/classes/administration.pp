@@ -14,8 +14,8 @@ class mysql::administration {
 	}
 
 	common::concatfilepart { "sudoers.mysql":
-		ensure => present,
-		file => "/etc/sudoers",
+		ensure  => present,
+		file    => "/etc/sudoers",
 		content => "
 			# This part comes from modules/mysql/manifests/classes/administration.pp
 			%mysql-admin ALL=(root) ${distro_specific_mysql_sudo}

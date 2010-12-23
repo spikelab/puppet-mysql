@@ -15,18 +15,18 @@ class mysql::backup {
 	if $mysqldump_retention {} else { $mysqldump_retention = "week" }
 
 	file { "/var/backups/mysql":
-		ensure  => directory,
-		owner   => "root",
-		group   => "root",
-		mode    => 750,
+		ensure => directory,
+		owner  => "root",
+		group  => "root",
+		mode   => 750,
 	}
 
 	file { "/usr/local/bin/mysql-backup.sh":
 		ensure => present,
 		source => "puppet:///modules/mysql/mysql-backup.sh",
-		owner => "root",
-		group => "root",
-		mode  => 555,
+		owner  => "root",
+		group  => "root",
+		mode   => 555,
 	}
 
 	cron { "mysql-backup":

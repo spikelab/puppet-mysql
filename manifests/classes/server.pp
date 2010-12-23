@@ -9,7 +9,7 @@ class mysql::server {
 	$mycnfctx = "/files/${mycnf}"
 
 	user { "mysql":
-		ensure => present,
+		ensure  => present,
 		require => Package["mysql-server"],
 	}
 
@@ -18,11 +18,11 @@ class mysql::server {
 	}
 
 	file { "/etc/mysql/my.cnf":
-		ensure => present,
-		path => $mycnf,
-		owner => root,
-		group => root,
-		mode => 644,
+		ensure  => present,
+		path    => $mycnf,
+		owner   => root,
+		group   => root,
+		mode    => 644,
 		seltype => "mysqld_etc_t",
 		require => Package["mysql-server"],
 	}
@@ -33,36 +33,36 @@ class mysql::server {
 	}
 
 	augeas { "my.cnf/mysqld":
-		context => "$mycnfctx/mysqld/",
+		context   => "$mycnfctx/mysqld/",
 		load_path => "/usr/share/augeas/lenses/contrib/",
-		changes => [
+		changes   => [
 			"set pid-file /var/run/mysqld/mysqld.pid",
 			"set old_passwords 0",
 			"set character-set-server utf8",
 			"set log-warnings 1",
 			$operatingsystem ? {
 				/RedHat|Fedora|CentOS/ => "set log-error /var/log/mysqld.log",
-				default => "set log-error /var/log/mysql/error.log",
+				default                => "set log-error /var/log/mysql/error.log",
 			},
 			$operatingsystem ? {
 				/RedHat|Fedora|CentOS/ => "set slow-query-log /var/log/mysql-slow-queries.log",
-				default => "set slow-query-log /var/log/mysql/mysql-slow.log",
+				default                => "set slow-query-log /var/log/mysql/mysql-slow.log",
 			},
 			#"ins log-slow-admin-statements after log-slow-queries", # BUG: not implemented in puppet yet
 			$operatingsystem ? {
 				/RedHat|Fedora|CentOS/ => "set socket /var/lib/mysql/mysql.sock",
-				default => "set socket /var/run/mysqld/mysqld.sock",
+				default                => "set socket /var/run/mysqld/mysqld.sock",
 			}
 		],
-		require => File["/etc/mysql/my.cnf"],
-		notify => Service["mysql"],
+		require   => File["/etc/mysql/my.cnf"],
+		notify    => Service["mysql"],
 	}
 
 	# by default, replication is disabled
 	augeas { "my.cnf/replication":
-		context => "$mycnfctx/mysqld/",
+		context   => "$mycnfctx/mysqld/",
 		load_path => "/usr/share/augeas/lenses/contrib/",
-		changes => [
+		changes   => [
 			"rm log-bin",
       		"rm server-id",
 			"rm master-host",
@@ -70,29 +70,29 @@ class mysql::server {
 			"rm master-password",
 			"rm report-host"
 		],
-		require => File["/etc/mysql/my.cnf"],
-		notify => Service["mysql"],
+		require   => File["/etc/mysql/my.cnf"],
+		notify    => Service["mysql"],
 	}
 
 	augeas { "my.cnf/mysqld_safe":
-		context => "$mycnfctx/mysqld_safe/",
+		context   => "$mycnfctx/mysqld_safe/",
 		load_path => "/usr/share/augeas/lenses/contrib/",
-		changes => [
+		changes   => [
 			"set pid-file /var/run/mysqld/mysqld.pid",
 			$operatingsystem ? {
 				/RedHat|Fedora|CentOS/ => "set socket /var/lib/mysql/mysql.sock",
-				default => "set socket /var/run/mysqld/mysqld.sock",
+				default                => "set socket /var/run/mysqld/mysqld.sock",
 			}
 		],
-		require => File["/etc/mysql/my.cnf"],
-		notify => Service["mysql"],
+		require   => File["/etc/mysql/my.cnf"],
+		notify    => Service["mysql"],
 	}
 
 	# force use of system defaults
 	augeas { "my.cnf/performance":
-		context => "$mycnfctx/",
+		context   => "$mycnfctx/",
 		load_path => "/usr/share/augeas/lenses/contrib/",
-		changes => [
+		changes   => [
 			"rm mysqld/key_buffer",
 			"rm mysqld/max_allowed_packet",
 			"rm mysqld/table_cache",
@@ -115,30 +115,30 @@ class mysql::server {
 			"rm myisamchk/read_buffer",
 			"rm myisamchk/write_buffer"
 		],
-		require => File["/etc/mysql/my.cnf"],
-		notify => Service["mysql"],
+		require   => File["/etc/mysql/my.cnf"],
+		notify    => Service["mysql"],
 	}
 
 	augeas { "my.cnf/client":
-		context => "$mycnfctx/client/",
+		context   => "$mycnfctx/client/",
 		load_path => "/usr/share/augeas/lenses/contrib/",
-		changes => [
+		changes   => [
 			$operatingsystem ? {
 				/RedHat|Fedora|CentOS/ => "set socket /var/lib/mysql/mysql.sock",
-				default => "set socket /var/run/mysqld/mysqld.sock",
+				default                => "set socket /var/run/mysqld/mysqld.sock",
 			}
 		],
-		require => File["/etc/mysql/my.cnf"],
+		require   => File["/etc/mysql/my.cnf"],
 	}
 
 	service { "mysql":
-		ensure      => running,
-		enable      => $mysql_run_at_boot,
-		name        => $operatingsystem ? {
+		ensure  => running,
+		enable  => $mysql_run_at_boot,
+		name    => $operatingsystem ? {
 			/RedHat|Fedora|CentOS/ => "mysqld",
-			default => "mysql",
+			default               => "mysql",
 		},
-		require   => Package["mysql-server"],
+		require => Package["mysql-server"],
 	}
 
 	if $mysql_user {} else { $mysql_user = "root" }
@@ -146,17 +146,17 @@ class mysql::server {
 	if $mysql_password {
 		if $mysql_exists == "true" {
 			mysql_user { "${mysql_user}@localhost":
-				ensure => present,
+				ensure        => present,
 				password_hash => mysql_password($mysql_password),
-				require => Exec["Generate my.cnf"],
+				require       => Exec["Generate my.cnf"],
 			}
 		}
 
 		file { "/root/.my.cnf":
-			ensure => present,
-			owner => root,
-			group => root,
-			mode  => 600,
+			ensure  => present,
+			owner   => root,
+			group   => root,
+			mode    => 600,
 			content => template("mysql/my.cnf.erb"),
 			require => Exec["Initialize MySQL server root password"],
 		}
@@ -164,18 +164,18 @@ class mysql::server {
 		$mysql_password = inline_template("<%= (1..25).collect{|a| (('a'..'z').to_a + ('A'..'Z').to_a + ('0'..'9').to_a + %w(% & * + - : ? @ ^ _))[rand(75)] }.join %>")
 		
 		file { "/root/.my.cnf":
-			owner => root,
-			group => root,
-			mode  => 600,
+			owner   => root,
+			group   => root,
+			mode    => 600,
 			require => Exec["Initialize MySQL server root password"],
 		}
 	}
 
 	exec { "Initialize MySQL server root password":
-		unless      => "test -f /root/.my.cnf",
-		command     => "mysqladmin -u${mysql_user} password '${mysql_password}'",
-		notify      => Exec["Generate my.cnf"],
-		require     => [Package["mysql-server"], Service["mysql"]]
+		unless  => "test -f /root/.my.cnf",
+		command => "mysqladmin -u${mysql_user} password '${mysql_password}'",
+		notify  => Exec["Generate my.cnf"],
+		require => [Package["mysql-server"], Service["mysql"]]
 	}
 
 	exec { "Generate my.cnf":
@@ -188,10 +188,10 @@ class mysql::server {
 	if $mysql_exists == "true" {
 		mysql_user {
 			"root@127.0.0.1":
-				ensure => absent,
+				ensure  => absent,
 				require => File['/root/.my.cnf'];
 			"root@$hostname":
-        		ensure => absent,
+        		ensure  => absent,
 				require => File['/root/.my.cnf'];
 		}
 	}
@@ -209,7 +209,7 @@ class mysql::server {
 		ensure => present,
 		source => $operatingsystem ? {
 			/RedHat|Fedora|CentOS/ => "puppet:///modules/mysql/logrotate.redhat",
-			default => undef,
+			default                => undef,
 		}
 	}
 }

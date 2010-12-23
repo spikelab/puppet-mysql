@@ -4,7 +4,7 @@ class mysql::slave inherits mysql::master {
 		changes => [
 			"set relay-log mysqld-relay-bin",
 			$mysql_skip_slave_start ? {
-				true => "set skip-slave-start 1",
+				true    => "set skip-slave-start 1",
 				default => "rm skip-slave-start",
 			}
 		],
