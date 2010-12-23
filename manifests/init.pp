@@ -1,2 +1,5 @@
 import "classes/*.pp"
+import "classes/master/*.pp"
+import "classes/server/*.pp"
+import "classes/slave/*.pp"
 import "definitions/*.pp"
