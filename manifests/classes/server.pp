@@ -10,5 +10,5 @@ class mysql::server {
 
 	if $mysql_user {} else { $mysql_user = "root" }
 
-	include mysql::server::install, mysql::server::config, mysql::server::service, mysql::server::tuning
+	include mysql::server::install, mysql::server::config, mysql::server::service, mysql::server::initialize, mysql::server::tuning
 }
