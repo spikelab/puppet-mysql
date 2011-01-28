@@ -1,15 +1,32 @@
 = Mysql Puppet module =
 
 == Usage ==
+If yuo just want a mysql server use:
 
 include mysql::server
+
+Otherwise for master or slave you can do:
+
+include mysql::master
+or
+include mysql::slave
+In this case you need to at least define a variable "server-id" or applying the manifest will fail.
+
+
+Several pre-defined classes fitting small and big servers are provided. Be sure to check them out before using them, settings highly depend on available resources. 
+
+To grant permissions to users use the following:
 
 mysql::rights{"Set rights for puppet database":
   ensure   => present,
   database => "puppet",
   user     => "puppet",
-  password => "puppet"
+  password => "puppet",
+  priv     => "some_priv",
+  host     => "host"
 }
+Omitting a "database" field allows for creation of users with privileges that only exists in mysql.user. This should only be used in special cases, for example the replication user. To grant privs on all databases still use the "database" directive and specify "*" as value
+
 
 mysql::database{"mydb":
   ensure   => present
