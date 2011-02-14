@@ -33,7 +33,7 @@ Puppet::Type.type(:mysql_grant).provide(:mysql) do
 
 	# this parses the
 	def split_name(string)
-		matches = /^([^@]*)@([^\/]*)(\/(.*))?$/.match(string).captures.compact
+		matches = /^([^@]*)@([^\/]*)\/(.+)?$/.match(string).captures.compact
 		case matches.length 
 			when 2
 				{
@@ -41,12 +41,12 @@ Puppet::Type.type(:mysql_grant).provide(:mysql) do
 					:user => matches[0],
 					:host => matches[1]
 				}
-			when 4
+			when 3
 				{
 					:type => :db,
 					:user => matches[0],
 					:host => matches[1],
-					:db => matches[3]
+					:db => matches[2]
 				}
 		end
 	end
