@@ -9,4 +9,23 @@ class mysql::slave inherits mysql::master {
 			}
 		]
 	}
+        if $mysql_replicate_do_db {
+            augeas { "my.cnf/replication-db":
+                context    => "$mycnfctx/mysqld/",
+                load_path  => "/usr/share/augeas/lenses/contrib/",
+                changes    => [
+                               "set replicate_do_db ${mysql_replicate_do_db}",
+                              ],
+            }
+        }
+
+        if $mysql_replicate_rewrite_db {
+            augeas { "my.cnf/replication-rewrite-db":
+                context    => "$mycnfctx/mysqld/",
+                load_path  => "/usr/share/augeas/lenses/contrib/",
+                changes    => [
+                               "set replicate-rewrite-db ${mysql_replicate_rewrite_db}",
+                              ],
+            }
+        }
 }
