@@ -97,6 +97,24 @@ class mysql::server::tuning {
 		]
 	}
 
+        # by default use mysql's default innodb settings
+        augeas { "my.cnf/innodb":
+              context => "$mycnfctx/mysqld/",
+              load_path => "/usr/share/augeas/lenses/contrib/",
+              changes => [
+                      "rm innodb_additional_mem_pool_size",
+                      "rm innodb_autoinc_lock_mode",
+                      "rm innodb_buffer_pool_size",
+                      "rm innodb_data_file_path",
+                      "rm innodb_flush_log_at_trx_commit",
+                      "rm innodb_lock_wait_timeout",
+                      "rm innodb_log_buffer_size",
+                      "rm innodb_log_file_size"
+                      ],
+              require => File["/etc/mysql/my.cnf"],
+              notify => Service["mysql"],
+        }
+        
 	augeas { "my.cnf/client":
 		context   => "$mycnfctx/client/",
 		load_path => "/usr/share/augeas/lenses/contrib/",
