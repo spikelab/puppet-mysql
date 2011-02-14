@@ -25,7 +25,7 @@ class mysql::server::tuning {
                         "set character-set-server ${mysql_character_set_server}",
                         "set default-storage-engine ${mysql_default_engine}",
                         "set sql-mode ${mysql_sql_mode}",
-                        "set init_connect ${mysql_autocommit}",
+                        "set init_connect '${mysql_autocommit}'",
 			$operatingsystem ? {
 				/(?i)(RedHat|CentOS|Fedora)/ => "set log-error /var/log/mysqld.log",
 				default                      => "set log-error /var/log/mysql/error.log"
