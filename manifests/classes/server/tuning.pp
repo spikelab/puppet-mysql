@@ -6,7 +6,14 @@ class mysql::server::tuning {
 		notify  => Class["mysql::server::service"]
 	}
 	
-	augeas { "my.cnf/mysqld":
+        # NOTE maybe to move to extlookup
+        if ! $mysql_listen_on { $mysql_listen_on = "127.0.0.1" }
+        if ! $mysql_sql_mode { $mysql_sql_mode = "STRICT_TRANS_TABLES,STRICT_ALL_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER" }
+        if ! $mysql_default_engine { $mysql_default_engine = "innodb" }
+        if ! $mysql_character_set_server { $mysql_character_set_server = "utf8" }
+        if ! $mysql_autocommit { $mysql_autocommit = "set autocommit=0" }
+
+        augeas { "my.cnf/mysqld":
 		context   => "$mycnfctx/mysqld/",
 		load_path => "/usr/share/augeas/lenses/contrib/",
 		changes   => [
@@ -14,6 +21,11 @@ class mysql::server::tuning {
 			"set old_passwords 0",
 			"set character-set-server utf8",
 			"set log-warnings 1",
+                        "set bind-address ${mysql_listen_on}",
+                        "set character-set-server ${mysql_character_set_server}",
+                        "set default-storage-engine ${mysql_default_engine}",
+                        "set sql-mode ${mysql_sql_mode}",
+                        "set init_connect ${mysql_autocommit}",
 			$operatingsystem ? {
 				/(?i)(RedHat|CentOS|Fedora)/ => "set log-error /var/log/mysqld.log",
 				default                      => "set log-error /var/log/mysql/error.log"
