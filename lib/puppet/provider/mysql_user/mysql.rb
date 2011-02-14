@@ -51,7 +51,7 @@ Puppet::Type.type(:mysql_user).provide(:mysql,
 	end
 
 	def create
-		mysql "mysql", "-e", "create user '%s' identified by PASSWORD '%s'" % [ @resource[:name].sub("@", "'@'"), @resource.should(:password_hash) ]
+		mysql "mysql", "-e", "create user '%s' identified by PASSWORD '%s'" % [ @resource[:name].sub("@", "'@'"), @resource.should(:initial_password_hash) || @resource.should(:password_hash) ]
 		mysql_flush
 	end
 
@@ -66,11 +66,19 @@ Puppet::Type.type(:mysql_user).provide(:mysql,
 
 	def password_hash
 		@property_hash[:password_hash]
-	end
+    end
 
 	def password_hash=(string)
 		mysql "mysql", "-e", "SET PASSWORD FOR '%s' = '%s'" % [ @resource[:name].sub("@", "'@'"), string ]
 		mysql_flush
 	end
+
+    def initial_password_hash
+        @resource[:initial_password_hash]
+    end
+
+    def initial_password_hash=(string)
+        # Nothing to do here, the initial password hash is only set when creating a new user
+    end
 end
 

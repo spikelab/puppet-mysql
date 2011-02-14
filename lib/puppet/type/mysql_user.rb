@@ -18,5 +18,9 @@ Puppet::Type.newtype(:mysql_user) do
   newproperty(:password_hash) do
     desc "The password hash of the user. Use mysql_password() for creating such a hash."
   end
+
+  newproperty(:initial_password_hash) do
+    desc "The initial password hash of the user.  Use mysql_password() for creating such a hash.  This will only be used when creating the user."
+  end
 end
 
