@@ -1,4 +1,4 @@
-class mysql::master inherits mysql::server {
+class mysql::master inherits mysql::server::tuning {
 	Augeas["my.cnf/replication"] {
 		changes => [
 			"set log-bin mysqld-bin",

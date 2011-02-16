@@ -1,4 +1,4 @@
-class mysql::innodb inherits mysql::server {
+class mysql::innodb inherits mysql::server::tuning {
   if ! $mysql_innodb_additional_mem_pool_size { $innodb_additional_mem_pool_size = "16M" }
   if ! $innodb_autoinc_lock_mode { $innodb_autoinc_lock_mode = "1" }
   if ! $innodb_buffer_pool_size { $innodb_buffer_pool_size = "12G" }

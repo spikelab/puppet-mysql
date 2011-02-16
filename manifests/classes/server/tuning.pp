@@ -1,6 +1,8 @@
 # Class: mysql::server::tuning
 
 class mysql::server::tuning {
+        include mysql::server
+
 	Augeas {
 		require => Class["mysql::server::config"],
 		notify  => Class["mysql::server::service"]
@@ -48,7 +50,7 @@ class mysql::server::tuning {
 		load_path => "/usr/share/augeas/lenses/contrib/",
 		changes   => [
 			"rm log-bin",
-      		"rm server-id",
+      		        "rm server-id",
 			"rm master-host",
 			"rm master-user",
 			"rm master-password",

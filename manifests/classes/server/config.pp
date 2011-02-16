@@ -2,7 +2,9 @@
 #
 #
 class mysql::server::config {
-	File {
+        include mysql::server::install, mysql::server::service
+
+        File {
 		require => Class["mysql::server::install"],
 		notify  => Class["mysql::server::service"]
 	}
