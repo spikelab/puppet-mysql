@@ -28,7 +28,7 @@ let sto_to_comment = IniFile.sto_to_comment
 
 let entry    = 
       let kw = IniFile.entry_re in
-         [ key kw . (sep . sto_to_comment)? . (comment|eol) ] | comment
+         [ Util.indent . key kw . (sep . sto_to_comment)? . (comment|eol) ] | comment
 
 
 (************************************************************************
