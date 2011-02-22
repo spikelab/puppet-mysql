@@ -2,6 +2,7 @@
 
 class mysql::server::tuning {
         include mysql::server
+        $mycnfctx = $mysql::server::mycnfctx
 
 	Augeas {
 		require => Class["mysql::server::config"],
