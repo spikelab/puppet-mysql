@@ -56,7 +56,8 @@ Puppet::Type.type(:mysql_grant).provide(:mysql) do
 			name = split_name(@resource[:name])
 			case name[:type]
 			when :user
-				mysql "mysql", "-e", "INSERT INTO user (host, user) VALUES ('%s', '%s')" % [
+                                # when using insert rather than create user fields with no default should be set
+				mysql "mysql", "-e", "INSERT INTO user (host, user, ssl_cipher, x509_issuer, x509_subject) VALUES ('%s', '%s', '', '', '')" % [
 					name[:host], name[:user],
 				]
 			when :db
