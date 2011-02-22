@@ -2,7 +2,7 @@
 #
 #
 class mysql::server::initialize {
-	if $mysql_password {
+	if $mysql_password != undef {
 		if $mysql_exists == "true" {
 			mysql_user { "${mysql_user}@localhost":
 				ensure        => present,
