@@ -31,9 +31,9 @@ define mysql::user($user, $password, $host="localhost", $ensure="present", $mycn
 			}
 		}
 		if $privs != "" and $ensure == "present"{
-			mysql_grant { "${user}@${host}":
-				privileges => $priv,
-				require    => [File["/root/.my.cnf"],Mysql::User["${user}"]]
+			mysql_grant { "${user}@${host}/":
+				privileges => $privs,
+				require    => [File["/root/.my.cnf"],Mysql_user["${user}@${host}"]]
 			}
 		}
 		# TOFIX variables reassigning necessary due to the template variables
